@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "219821482808",
+    "project_id": "cek-film",
+    "storage_bucket": "cek-film.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219821482808:android:4145da049385e6418917cd",
+        "android_client_info": {
+          "package_name": "com.trpl.cekfilm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219821482808-ul3ofbefrougkuqutpeqpm6f3rr14oio.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnTPF34ibYzYuhtsO_LzMBdjF5xglgOFQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219821482808-ul3ofbefrougkuqutpeqpm6f3rr14oio.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
