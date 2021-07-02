@@ -80,7 +80,8 @@ class NobarCard extends StatelessWidget {
                               height: 8,
                             ),
                             Text(
-                              'Selasa,2 Mei 2021',
+                              DateFormat("d MMMM yyyy", "id_ID").format(
+                                  DateFormat("yyyy-MM").parse(nobar.schedule)),
                               style: whiteTextFont.copyWith(
                                   color: yellowPrimary, fontSize: 12),
                             ),
@@ -90,18 +91,19 @@ class NobarCard extends StatelessWidget {
                 ],
               ),
               Positioned(
-                  bottom: Get.height * 0.055,
+                  bottom: Get.height * 0.03,
                   left: Get.width * 0.02,
                   child: Column(
                     children: [
-                      nobar.posterPath == null
+                      nobar.users.profilePath == null ||
+                              nobar.users.profilePath == ""
                           ? SvgPicture.asset('assets/avatar.svg',
                               width: Get.height * 0.1, color: yellowPrimary)
                           : Image.network(
-                              baseUrlImageTmdbW500 + nobar.posterPath,
+                              baseUrlImage + nobar.users.profilePath,
                               width: Get.height * 0.1),
                       SizedBox(
-                        height: 2,
+                        height: 5,
                       ),
                       nobar.freeTicket == "1"
                           ? Container(
@@ -122,16 +124,21 @@ class NobarCard extends StatelessWidget {
               Positioned(
                   right: 10,
                   top: 5,
-                  child: Container(
-                    child: Text(
-                      nobar.title,
-                      style: whiteTextFont,
+                  child: SizedBox(
+                    width: Get.width * 0.4,
+                    child: Container(
+                      child: Text(
+                        nobar.title,
+                        maxLines: 1,
+                        style: whiteTextFont,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: _randomColor.randomColor(
+                              colorBrightness: ColorBrightness.dark)),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        color: _randomColor.randomColor(
-                            colorBrightness: ColorBrightness.dark)),
                   )),
               Positioned(
                   right: 10,

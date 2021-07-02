@@ -4,10 +4,12 @@ class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Rxn<User> _firebaseUser = Rxn<User>();
   Rxn<Users> users = Rxn<Users>();
+  var genreUser = <Genre>[];
+
   var pref = GetStorage();
   var newUser = false.obs;
   String get user => _firebaseUser.value?.email;
-
+  UtilsController utilsController = Get.put(UtilsController());
   @override
   void onInit() {
     super.onInit();
@@ -15,7 +17,6 @@ class AuthController extends GetxController {
   }
 
   void setPref(Users userr) {
-    // print('user ' + save.email);
     pref.write('idUser', userr.idUser);
     pref.write('email', userr.email);
     pref.write('noHp', userr.noHp);
@@ -23,6 +24,7 @@ class AuthController extends GetxController {
     pref.write('namaBelakang', userr.namaBelakang);
     pref.write('kdGenre', userr.kdGenre);
     pref.write('profilePath', userr.profilePath);
+    pref.write('isLogin', true);
   }
 
   void checkUser(String email, String password) async {
@@ -55,10 +57,49 @@ class AuthController extends GetxController {
       print(e);
     } catch (e) {
       Get.back();
-      // Get.snackbar('Kesalahan', e.toString(),
-      //     margin: EdgeInsets.all(12),
-      //     backgroundColor: Colors.white70,
-      //     snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
+  void getUser(String userId) async {
+    try {
+      genreUser.clear();
+      Users user = await UserServices.getUser(userId);
+      if (user != null) {
+        List<Genre> gen = await UtilsServices.getListGenre();
+        user.kdGenre.forEach((element) {
+          genreUser.add(gen.singleWhere((e) => e.id == int.tryParse(element)));
+        });
+        Get.back();
+
+        Get.to(EditProfilePage(user));
+      } else {
+        Get.snackbar('Kesalahan', 'Error login',
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    } on FirebaseAuthException catch (e) {
+      Get.back();
+      if (e.code == 'user-not-found') {
+        Get.snackbar('Email tidak ditemukan', 'Email tersebut tidak terdaftar',
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white70,
+            snackPosition: SnackPosition.BOTTOM);
+      } else if (e.code == 'wrong-password') {
+        Get.snackbar('Password Salah', 'Password yang kamu masukan salah',
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white60,
+            snackPosition: SnackPosition.BOTTOM);
+      } else if (e.code == 'invalid-email') {
+        Get.snackbar('Email tidak valid', 'Email yang kamu masukan tidak valid',
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white70,
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (e) {
+      Get.back();
+      Get.snackbar('Kesalahan', e.toString(),
+          margin: EdgeInsets.all(12),
+          backgroundColor: Colors.white70,
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -159,13 +200,6 @@ class AuthController extends GetxController {
   }
 
   void sendOtp(RegistrationData registrationData) async {
-    // var rnd = new Random();
-    // var next = rnd.nextDouble() * 1000000;
-    // while (next < 100000) {
-    //   next *= 10;
-    // }
-    // await UtilsServices.sendOtp(
-    //     "62" + registrationData.noHp, verificationId, next.toInt());
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: '+62' + registrationData.noHp,
       verificationCompleted: (PhoneAuthCredential credential) {},
@@ -188,70 +222,87 @@ class AuthController extends GetxController {
     try {
       if (!kIsWeb) {
         if (page is SignUpPage) {
-          final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+          await GoogleSignIn().signOut();
+          try {
+            final GoogleSignInAccount googleUser =
+                await GoogleSignIn().signIn();
 
-          // Obtain the auth details from the request
-          final GoogleSignInAuthentication googleAuth =
-              await googleUser.authentication;
+            final GoogleSignInAuthentication googleAuth =
+                await googleUser.authentication;
 
-          // Create a new credential
-          final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken,
-          );
+            final credential = GoogleAuthProvider.credential(
+              accessToken: googleAuth.accessToken,
+              idToken: googleAuth.idToken,
+            );
 
-          // Once signed in, return the UserCredential
-          UserCredential result =
-              await FirebaseAuth.instance.signInWithCredential(credential);
-          if (!result.additionalUserInfo.isNewUser) {
+            UserCredential result =
+                await FirebaseAuth.instance.signInWithCredential(credential);
+
+            bool existUser = await AuthServices.getUser(result.user.uid);
+            print(existUser);
+            if (!result.additionalUserInfo.isNewUser && existUser) {
+              Get.back();
+              Get.snackbar(
+                  'Akun telah ada', 'Akun google ini telah pernah didaftarkan',
+                  margin: EdgeInsets.all(12),
+                  backgroundColor: Colors.white60,
+                  snackPosition: SnackPosition.BOTTOM);
+            } else {
+              Get.back();
+              print('regis id :' + result.user.uid);
+              Get.to(RegistrationDataPage(RegistrationData(
+                  google: true,
+                  idUser: result.user.uid,
+                  email: googleUser.email)));
+            }
+          } catch (error) {
             Get.back();
-            Get.snackbar(
-                'Akun telah ada', 'Akun google ini telah pernah didaftarkan',
+            Get.snackbar('Masuk dibatalkan', 'Batal untuk masuk ke akun anda',
                 margin: EdgeInsets.all(12),
                 backgroundColor: Colors.white60,
                 snackPosition: SnackPosition.BOTTOM);
-            // Get.to(RegistrationDataPage(RegistrationData(
-            //     idUser: result.user.uid, email: googleUser.email)));
-          } else {
-            Get.back();
-            print('regis id :' + result.user.uid);
-            Get.to(RegistrationDataPage(RegistrationData(
-                google: true,
-                idUser: result.user.uid,
-                email: googleUser.email)));
           }
-
-          // Get.offAll(Root());
         } else {
-          final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+          await GoogleSignIn().signOut();
+          try {
+            final GoogleSignInAccount googleUser =
+                await GoogleSignIn().signIn();
 
-          // Obtain the auth details from the request
-          final GoogleSignInAuthentication googleAuth =
-              await googleUser.authentication;
+            final GoogleSignInAuthentication googleAuth =
+                await googleUser.authentication;
 
-          // Create a new credential
-          final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken,
-          );
+            final credential = GoogleAuthProvider.credential(
+              accessToken: googleAuth.accessToken,
+              idToken: googleAuth.idToken,
+            );
 
-          // Once signed in, return the UserCredential
-          UserCredential result =
-              await FirebaseAuth.instance.signInWithCredential(credential);
-          Get.back();
-
-          if (result.additionalUserInfo.isNewUser) {
+            UserCredential result =
+                await FirebaseAuth.instance.signInWithCredential(credential);
+            bool existUser = await AuthServices.getUser(result.user.uid);
+            print(existUser);
             Get.back();
-            print('regis id :' + result.user.uid);
-            Get.to(RegistrationDataPage(RegistrationData(
-                google: true,
-                idUser: result.user.uid,
-                email: googleUser.email)));
-          } else {
-            Users user = await UserServices.getUser(result.user.uid);
 
-            setPref(user);
-            Get.offAll(Root());
+            if (result.additionalUserInfo.isNewUser ||
+                (!result.additionalUserInfo.isNewUser && !existUser)) {
+              Get.back();
+
+              print('regis id :' + result.user.uid);
+              Get.to(RegistrationDataPage(RegistrationData(
+                  google: true,
+                  idUser: result.user.uid,
+                  email: googleUser.email)));
+            } else {
+              Users user = await UserServices.getUser(result.user.uid);
+
+              setPref(user);
+              Get.offAll(Root());
+            }
+          } catch (error) {
+            Get.back();
+            Get.snackbar('Masuk dibatalkan', 'Batal untuk masuk ke akun anda',
+                margin: EdgeInsets.all(12),
+                backgroundColor: Colors.white60,
+                snackPosition: SnackPosition.BOTTOM);
           }
         }
       } else {
@@ -263,7 +314,6 @@ class AuthController extends GetxController {
           googleProvider
               .setCustomParameters({'login_hint': 'user@example.com'});
 
-          // Once signed in, return the UserCredential
           UserCredential result =
               await FirebaseAuth.instance.signInWithPopup(googleProvider);
           if (!result.additionalUserInfo.isNewUser) {
@@ -273,8 +323,6 @@ class AuthController extends GetxController {
                 margin: EdgeInsets.all(12),
                 backgroundColor: Colors.white60,
                 snackPosition: SnackPosition.BOTTOM);
-            // Get.to(RegistrationDataPage(RegistrationData(
-            //     idUser: result.user.uid, email: googleUser.email)));
           } else {
             Get.back();
             print('regis id :' + result.user.uid);
@@ -283,8 +331,6 @@ class AuthController extends GetxController {
                 idUser: result.user.uid,
                 email: result.user.email)));
           }
-
-          // Get.offAll(Root());
         } else {
           GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
@@ -293,7 +339,6 @@ class AuthController extends GetxController {
           googleProvider
               .setCustomParameters({'login_hint': 'user@example.com'});
 
-          // Once signed in, return the UserCredential
           UserCredential result =
               await FirebaseAuth.instance.signInWithPopup(googleProvider);
           Get.back();
@@ -339,55 +384,86 @@ class AuthController extends GetxController {
           backgroundColor: Colors.white70,
           snackPosition: SnackPosition.BOTTOM);
     }
-    // Trigger the authentication flow
   }
-
-  // void signUpWithGoogle() async {
-  //   try {
-  //     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-
-  //     // Obtain the auth details from the request
-  //     final GoogleSignInAuthentication googleAuth =
-  //         await googleUser.authentication;
-
-  //     Get.back();
-
-  //     Get.to(RegistrationDataPage(RegistrationData(
-  //         google: true,
-  //         credential: googleAuth.accessToken,
-  //         idToken: googleAuth.idToken,
-  //         email: googleUser.email)));
-  //   } on FirebaseAuthException catch (e) {
-  //     Get.back();
-  //     if (e.code == 'user-not-found') {
-  //       Get.snackbar('Email tidak ditemukan', 'Email tersebut tidak terdaftar',
-  //           margin: EdgeInsets.all(12),
-  //           backgroundColor: Colors.white70,
-  //           snackPosition: SnackPosition.BOTTOM);
-  //     } else if (e.code == 'wrong-password') {
-  //       Get.snackbar('Password Salah', 'Password yang kamu masukan salah',
-  //           margin: EdgeInsets.all(12),
-  //           backgroundColor: Colors.white60,
-  //           snackPosition: SnackPosition.BOTTOM);
-  //     }
-  //   } catch (e) {
-  //     Get.back();
-  //     Get.snackbar('Kesalahan', e.message,
-  //         margin: EdgeInsets.all(12),
-  //         backgroundColor: Colors.white70,
-  //         snackPosition: SnackPosition.BOTTOM);
-  //   }
-  //   // Trigger the authentication flow
-  // }
 
   void logout() async {
     try {
+      pref.remove('isLogin');
+
       await _auth.signOut();
+      await GoogleSignIn().signOut();
+      Get.off(LoginPage());
     } catch (e) {
       Get.snackbar('Kesalahan', e.message,
           margin: EdgeInsets.all(12),
           backgroundColor: Colors.white70,
           snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
+  Future<void> changePassword(String newPassword) async {
+    try {
+      User user = FirebaseAuth.instance.currentUser;
+
+      //Pass in the password to updatePassword.
+      user.updatePassword(newPassword).then((_) {
+        print("Successfully changed password");
+      }).catchError((error) {
+        print("Password can't be changed" + error.toString());
+        //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+      });
+      Get.back();
+    } on FirebaseAuthException catch (e) {
+      Get.back();
+      if (e.code == 'invalid-email') {
+        Get.snackbar('Email salah',
+            'Email yang anda masukan tidak valid,mohon untuk input email yang valid',
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white70,
+            snackPosition: SnackPosition.BOTTOM);
+      } else if (e.code == 'user-not-found') {
+        Get.snackbar('Pengguna tidak ada',
+            'Tidak ditemukan akun yang menggunakan email ini',
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white60,
+            snackPosition: SnackPosition.BOTTOM);
+      } else {
+        Get.snackbar('A', e.toString(),
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white60,
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      Get.back();
+    } on FirebaseAuthException catch (e) {
+      Get.back();
+      if (e.code == 'invalid-email') {
+        Get.snackbar('Email salah',
+            'Email yang anda masukan tidak valid,mohon untuk input email yang valid',
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white70,
+            snackPosition: SnackPosition.BOTTOM);
+      } else if (e.code == 'user-not-found') {
+        Get.snackbar('Pengguna tidak ada',
+            'Tidak ditemukan akun yang menggunakan email ini',
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white60,
+            snackPosition: SnackPosition.BOTTOM);
+      } else {
+        Get.snackbar('A', e.toString(),
+            margin: EdgeInsets.all(12),
+            backgroundColor: Colors.white60,
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

@@ -171,7 +171,7 @@ class _PreferencePageState extends State<PreferencePage> {
         .map((e) => SelectedTableBox(
               e.name,
               width: width,
-              isSelected: selectedGenres.contains(e.id),
+              isSelected: selectedGenres.contains(e.id.toString()),
               onTap: () {
                 onSelectGenre(e.id.toString());
               },

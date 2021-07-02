@@ -190,7 +190,7 @@ class OnBoardingContent extends StatelessWidget {
           flex: 1,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: 24, vertical: Get.height * 0.08),
+                horizontal: 24, vertical: Get.height * 0.05),
             child: SizedBox(
               width: Get.width / 1,
               child: Text(
@@ -220,7 +220,7 @@ class OnBoardingContent extends StatelessWidget {
           child: Image.asset(
             image,
             width: double.infinity,
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 2,
           ),
         ),
 

@@ -42,4 +42,12 @@ class AuthServices {
       }
     }
   }
+
+  static Future<bool> getUser(String id) async {
+    CollectionReference _userCollection =
+        FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot snapshot = await _userCollection.doc(id).get();
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    return data != null;
+  }
 }

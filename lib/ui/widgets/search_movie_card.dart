@@ -1,9 +1,9 @@
 part of 'widgets.dart';
 
-class WidthMovieCard extends StatelessWidget {
+class SearchCard extends StatelessWidget {
   final Movie movie;
   final Function onTap;
-  WidthMovieCard(this.movie, {this.onTap});
+  SearchCard(this.movie, {this.onTap});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -13,24 +13,37 @@ class WidthMovieCard extends StatelessWidget {
         }
       },
       child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: EdgeInsets.symmetric(horizontal: 24),
           decoration: BoxDecoration(
-              color: Colors.black12, borderRadius: BorderRadius.circular(8)),
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(8)),
           child: Stack(
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: Get.width * 0.16,
-                    height: Get.height * 0.15,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                baseUrlImageTmdbW500 + movie.posterPath),
-                            fit: BoxFit.fill)),
-                  ),
+                  movie.posterPath == ""
+                      ? Container(
+                          color: Colors.grey,
+                          width: Get.width * 0.12,
+                          height: Get.height * 0.10,
+                          child: Center(
+                            child: Text(
+                              'NO POSTER',
+                              style: whiteTextFont.copyWith(
+                                  fontSize: Get.height * 0.008),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: Get.width * 0.12,
+                          height: Get.height * 0.15,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                  image: NetworkImage(baseUrlImageTmdbW500 +
+                                      movie.posterPath))),
+                        ),
                   SizedBox(
                     width: 12,
                   ),
@@ -40,14 +53,14 @@ class WidthMovieCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: Get.width * 0.5,
+                          width: Get.width * 0.6,
                           child: Text(
                             movie.title,
                             maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                             style: whiteTextFont.copyWith(
                                 fontSize: Get.height * 0.015,
                                 fontWeight: FontWeight.w700),
+                            overflow: TextOverflow.clip,
                           ),
                         ),
                         Row(

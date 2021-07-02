@@ -9,6 +9,36 @@ class UtilsServices {
       var data = jsonDecode(jsonEncode(response.data));
       List<Genre> value =
           (data['data'] as Iterable).map((e) => Genre.fromJson(e)).toList();
+      print(value.length);
+      return value;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<List> getProvinsi() async {
+    try {
+      var response = await Dio()
+          .get('https://shcproduction.com/ws-mobile/utils/list_prov');
+
+      var data = jsonDecode(jsonEncode(response.data));
+      List value = data['data'];
+      print('List ' + value.length.toString());
+      return value;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<List> getKab(String id_prov) async {
+    try {
+      var response = await Dio().get(
+          'https://shcproduction.com/ws-mobile/utils/list_kab',
+          queryParameters: {"id_prov": id_prov});
+
+      var data = jsonDecode(jsonEncode(response.data));
+      List value = data['data'];
+      print(value.length);
       return value;
     } catch (e) {
       print(e);

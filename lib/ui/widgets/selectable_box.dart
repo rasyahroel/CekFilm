@@ -1,6 +1,6 @@
 part of 'widgets.dart';
 
-class SelectedTableBox extends StatelessWidget {
+class SelectedTableBox extends StatefulWidget {
   final bool isSelected;
   final bool isEnabled;
   final double width;
@@ -18,33 +18,38 @@ class SelectedTableBox extends StatelessWidget {
       this.textStyle});
 
   @override
+  _SelectedTableBoxState createState() => _SelectedTableBoxState();
+}
+
+class _SelectedTableBoxState extends State<SelectedTableBox> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          if (onTap != null) {
-            onTap();
+          if (widget.onTap != null) {
+            widget.onTap();
           }
         },
         child: Container(
-          width: width,
-          height: height,
+          width: widget.width,
+          height: widget.height,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              color: (!isEnabled)
+              color: (!widget.isEnabled)
                   ? Colors.white
-                  : isSelected
+                  : widget.isSelected
                       ? yellowPrimary
                       : Colors.transparent,
               border: Border.all(
-                  color: (!isEnabled)
+                  color: (!widget.isEnabled)
                       ? yellowPrimary
-                      : isSelected
+                      : widget.isSelected
                           ? Colors.transparent
                           : Colors.white)),
           child: Center(
             child: Text(
-              text ?? "None",
-              style: (textStyle ?? whiteTextFont)
+              widget.text ?? "None",
+              style: (widget.textStyle ?? whiteTextFont)
                   .copyWith(fontSize: 16, fontWeight: FontWeight.w400),
             ),
           ),

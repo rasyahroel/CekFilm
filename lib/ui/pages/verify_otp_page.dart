@@ -155,12 +155,10 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                           controller: textEditingController,
 
                           onCodeChanged: (val) {
-                            print(val);
-                            print(otp);
                             if (otp == "") {
                               setState(() {
                                 otp = val;
-                                if (otp != "") {
+                                if (otp != "" && val.length == 6) {
                                   Get.defaultDialog(
                                       backgroundColor: Colors.white,
                                       title: 'Loading...',

@@ -1,9 +1,12 @@
+import 'package:cek_film_app/controllers/controllers.dart';
 import 'package:cek_film_app/models/models.dart';
 import 'package:cek_film_app/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:random_color/random_color.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -12,3 +15,5 @@ part 'large_poster_card.dart';
 part 'nobar_card.dart';
 part 'width_movie_card.dart';
 part 'review_card.dart';
+part 'search_movie_card.dart';
+part 'refresh_widget.dart';

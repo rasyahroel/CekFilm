@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   another_flushbar: ^1.10.20
   base32: ^1.1.2
   carousel_slider: ^3.0.0
@@ -34,12 +36,15 @@ dependencies:
   firebase_auth: ^1.1.4
   firebase_core: ^1.1.1
   flutter_rating_bar: ^4.0.0
+  flutter_rounded_date_picker: ^2.0.2
   flutter_signin_button: ^2.0.0
   flutter_svg: ^0.22.0
   get: ^4.1.4
   get_storage: ^2.0.2
   google_fonts: ^2.0.0
   google_sign_in: ^5.0.2
+  image_picker: ^0.8.1+1
+  intl: ^0.17.0
   intl_phone_number_input: ^0.7.0+2
   like_button: ^2.0.2
   lottie: ^1.0.1
@@ -52,6 +57,7 @@ dependencies:
   shimmer: ^2.0.0
   sms_autofill: ^2.0.0
   transformer_page_view: ^0.1.6
+  url_launcher: ^6.0.7
 
 dev_dependencies:
   flutter_test:

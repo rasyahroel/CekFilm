@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cek_film_app/controllers/controllers.dart';
 import 'package:cek_film_app/models/models.dart';
@@ -9,6 +10,11 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'dart:math' as math;
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:random_color/random_color.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -34,3 +40,9 @@ part 'home_page.dart';
 part 'my_review_page.dart';
 part 'verify_otp_page.dart';
 part 'detail_movie_page.dart';
+part 'search_page.dart';
+part 'ajak_nobar_page.dart';
+part 'nobar_page.dart';
+part 'detail_nobar_page.dart';
+part 'profile_page.dart';
+part 'edit_profile_page.dart';

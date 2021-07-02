@@ -1,10 +1,11 @@
 // import 'package:cek_film_app/shared/shared.dart';
 import 'package:cek_film_app/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_storage/get_storage.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 import 'controllers/bindings/auth_bindings.dart';
 
 void main() async {
@@ -12,6 +13,7 @@ void main() async {
   await GetStorage.init();
 
   await Firebase.initializeApp();
+  await initializeDateFormatting('id_ID', null);
   runApp(MyApp());
 }
 
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'CEK-FILM',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          canvasColor: Colors.transparent,
           // This is the theme of your application.
           //
           // Try running your application with "flutter run". You'll see the
@@ -33,6 +36,7 @@ class MyApp extends StatelessWidget {
           // or simply save your changes to "hot reload" in a Flutter IDE).
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
+          unselectedWidgetColor: Colors.white,
           primaryColor: Colors.white),
       home: SplashScreen(),
     );

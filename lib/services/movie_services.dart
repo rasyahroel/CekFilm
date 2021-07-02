@@ -42,4 +42,20 @@ class MovieServices {
       print(e.toString());
     }
   }
+
+  static Future<List<Movie>> searchMovie(String keyword, int page) async {
+    try {
+      var response = await Dio().get(
+          'https://shcproduction.com/ws-mobile/movie/search_movie',
+          queryParameters: {'keyword': keyword, 'page': page.toString()});
+      var data = jsonDecode(jsonEncode(response.data));
+      print(response.statusCode);
+      List<Movie> value =
+          (data['data'] as Iterable).map((e) => Movie.fromJson(e)).toList();
+      return value;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
 }

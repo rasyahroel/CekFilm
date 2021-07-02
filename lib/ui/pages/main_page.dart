@@ -62,7 +62,12 @@ class _MainPageState extends State<MainPage> {
             _page = index;
           });
         },
-        children: <Widget>[HomePage(), MyReviewPage()],
+        children: <Widget>[
+          HomePage(),
+          MyReviewPage(),
+          NobarPage(),
+          ProfilePage()
+        ],
       ),
     );
   }

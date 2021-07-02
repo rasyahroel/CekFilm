@@ -2,16 +2,35 @@ part of 'widgets.dart';
 
 class ReviewCard extends StatefulWidget {
   final Review review;
-  final Function onTapLike;
-  final Function onTapReport;
-  ReviewCard(this.review, {this.onTapLike, this.onTapReport});
+
+  ReviewCard(this.review);
 
   @override
   _ReviewCardState createState() => _ReviewCardState();
 }
 
 class _ReviewCardState extends State<ReviewCard> {
-  bool isLiked;
+  final reviewController = Get.put(ReviewController());
+  Future<bool> onLikeButtonTapped(bool isLiked) async {
+    if (isLiked || widget.review.isLiked == "1") {
+      reviewController.feedbackReview(widget.review.idReview, 'unlike');
+    } else {
+      reviewController.feedbackReview(widget.review.idReview, 'like');
+    }
+
+    return !isLiked;
+  }
+
+  Future<bool> onReportButtonTapped(bool isReport) async {
+    if (isReport || widget.review.isReport == "1") {
+      reviewController.feedbackReview(widget.review.idReview, 'unreport');
+    } else {
+      reviewController.feedbackReview(widget.review.idReview, 'report');
+    }
+
+    return !isReport;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,13 +61,98 @@ class _ReviewCardState extends State<ReviewCard> {
                         widget.review.users.namaDepan +
                             ' ' +
                             widget.review.users.namaBelakang,
-                        style:
-                            whiteTextFont.copyWith(fontWeight: FontWeight.w700),
+                        style: whiteTextFont.copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: Get.height * 0.015),
                       ),
-                      Text(
-                        '"' + widget.review.review + '"',
-                        style: whiteTextFont,
-                      )
+                      SizedBox(
+                        width: Get.width * 0.6,
+                        child: Text(
+                          '"' + widget.review.review + '"',
+                          overflow: TextOverflow.clip,
+                          style: whiteTextFont.copyWith(
+                              fontSize: Get.height * 0.015),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          LikeButton(
+                            onTap: onLikeButtonTapped,
+                            size: Get.height * 0.05,
+                            circleColor: CircleColor(
+                                start: Color(0xff00ddff),
+                                end: Color(0xff0099cc)),
+                            bubblesColor: BubblesColor(
+                              dotPrimaryColor: Color(0xff33b5e5),
+                              dotSecondaryColor: Color(0xff0099cc),
+                            ),
+                            likeBuilder: (bool isLiked) {
+                              return Icon(
+                                Icons.thumb_up,
+                                color: isLiked || widget.review.isLiked == "1"
+                                    ? yellowPrimary
+                                    : Colors.grey,
+                                size: Get.height * 0.02,
+                              );
+                            },
+                            likeCount: int.parse(widget.review.likeCount),
+                            countBuilder:
+                                (int count, bool isLiked, String text) {
+                              var color = isLiked ? Colors.white : Colors.grey;
+                              Widget result;
+                              if (count == 0) {
+                                result = Text(
+                                  "Suka",
+                                  style: whiteTextFont.copyWith(fontSize: 12),
+                                );
+                              } else
+                                result = Text(
+                                  text,
+                                  style: TextStyle(color: color),
+                                );
+                              return result;
+                            },
+                          ),
+                          LikeButton(
+                            onTap: onReportButtonTapped,
+                            size: Get.height * 0.05,
+                            circleColor: CircleColor(
+                                start: Color(0xff00ddff),
+                                end: Color(0xff0099cc)),
+                            bubblesColor: BubblesColor(
+                              dotPrimaryColor: Color(0xff33b5e5),
+                              dotSecondaryColor: Color(0xff0099cc),
+                            ),
+                            likeBuilder: (bool isLiked) {
+                              return Icon(
+                                Icons.flag,
+                                color: isLiked || widget.review.isReport == "1"
+                                    ? Colors.red
+                                    : Colors.grey,
+                                size: Get.height * 0.02,
+                              );
+                            },
+                            likeCount: int.parse(widget.review.reportCount),
+                            countBuilder:
+                                (int count, bool isLiked, String text) {
+                              var color = isLiked ? Colors.white : Colors.grey;
+                              Widget result;
+                              if (count == 0) {
+                                result = Text(
+                                  "Spoiler",
+                                  style: whiteTextFont.copyWith(fontSize: 12),
+                                );
+                              } else
+                                result = Text(
+                                  text,
+                                  style: TextStyle(color: color),
+                                );
+                              return result;
+                            },
+                          ),
+                        ],
+                      ),
+
                       // Row(
                       //   children: [
                       //     Text(movie.voteAverage.toString(),
@@ -64,89 +168,7 @@ class _ReviewCardState extends State<ReviewCard> {
                 ),
               ],
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Row(
-                children: [
-                  LikeButton(
-                    size: Get.height * 0.05,
-                    circleColor: CircleColor(
-                        start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                    bubblesColor: BubblesColor(
-                      dotPrimaryColor: Color(0xff33b5e5),
-                      dotSecondaryColor: Color(0xff0099cc),
-                    ),
-                    likeBuilder: (bool isLiked) {
-                      return Icon(
-                        Icons.thumb_up,
-                        color: isLiked ? yellowPrimary : Colors.grey,
-                        size: Get.height * 0.02,
-                      );
-                    },
-                    likeCount: int.parse(widget.review.likeCount),
-                    countBuilder: (int count, bool isLiked, String text) {
-                      var color = isLiked ? Colors.white : Colors.grey;
-                      Widget result;
-                      if (count == 0) {
-                        result = Text(
-                          "Suka",
-                          style: whiteTextFont.copyWith(fontSize: 12),
-                        );
-                      } else
-                        result = Text(
-                          text,
-                          style: TextStyle(color: color),
-                        );
-                      return result;
-                    },
-                  ),
-                  LikeButton(
-                    size: Get.height * 0.05,
-                    circleColor: CircleColor(
-                        start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                    bubblesColor: BubblesColor(
-                      dotPrimaryColor: Color(0xff33b5e5),
-                      dotSecondaryColor: Color(0xff0099cc),
-                    ),
-                    likeBuilder: (bool isLiked) {
-                      return Icon(
-                        Icons.flag,
-                        color: isLiked ? Colors.red : Colors.grey,
-                        size: Get.height * 0.02,
-                      );
-                    },
-                    likeCount: int.parse(widget.review.reportCount),
-                    countBuilder: (int count, bool isLiked, String text) {
-                      var color = isLiked ? Colors.white : Colors.grey;
-                      Widget result;
-                      if (count == 0) {
-                        result = Text(
-                          "Spoiler",
-                          style: whiteTextFont.copyWith(fontSize: 12),
-                        );
-                      } else
-                        result = Text(
-                          text,
-                          style: TextStyle(color: color),
-                        );
-                      return result;
-                    },
-                  ),
-                ],
-              ),
-            )
           ],
         ));
-  }
-
-  Future<bool> onLikeButtonTapped(bool isLiked) async {
-    /// send your request here
-    // final bool success= await sendRequest();
-
-    /// if failed, you can do nothing
-    // return success? !isLiked:isLiked;
-
-    return !isLiked;
   }
 }

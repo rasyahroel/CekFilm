@@ -8,3 +8,4 @@ part 'nobar_model.dart';
 part 'detail_movie_model.dart';
 part 'credit_model.dart';
 part 'review_model.dart';
+part 'participant_model.dart';

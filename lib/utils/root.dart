@@ -9,8 +9,6 @@ class Root extends GetWidget<AuthController> {
   final GetStorage pref = GetStorage();
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return (authController.user != null) ? MainPage() : LoginPage();
-    });
+    return (pref.read('isLogin') != null) ? MainPage() : LoginPage();
   }
 }

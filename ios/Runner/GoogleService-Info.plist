@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>219821482808-6bd0s9299gm2as849p5sqv8e7b1i9i16.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.219821482808-6bd0s9299gm2as849p5sqv8e7b1i9i16</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>219821482808-5tbq598g3rmkie543cosr467d8i18adq.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCIEz0DUp4-lWTHpLe9QgrbgJhQG67oc_o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>219821482808</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.trpl.cekfilm</string>
+	<key>PROJECT_ID</key>
+	<string>cek-film</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cek-film.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:219821482808:ios:b77d5bd08c4b9fd48917cd</string>
+</dict>
+</plist>
